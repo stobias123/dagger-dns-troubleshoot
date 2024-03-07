@@ -27,6 +27,7 @@ func main() {
 	ctr := c.Container().From("amazoncorretto:8")
 	ctr = BindDockerCompose(c, ctr, "docker-compose.ci.yml")
 	ctr.WithMountedDirectory("/app", src).
+        WithExec([]string{"amazon-linux-extras", "install", "redis6"}).
 		WithWorkdir("/app").
 		//WithEntrypoint([]string{"/bin/bash"}).
 		WithExec([]string{"./gradlew", ":test", "--tests", "ActiveRideCacheTest"}).Sync(ctx)

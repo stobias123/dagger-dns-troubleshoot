@@ -24,6 +24,12 @@ class ActiveRideCacheTest {
     val result = redis.get("test")
     assert(result == "test")
   }
+
+  @Test
+  fun `test running redis-cli command`() {
+    val result = Runtime.getRuntime().exec("redis-cli -h redis-cluster -p 30000 ping").inputStream.bufferedReader().readText()
+    assert(result == "PONG")
+  }
 }
 
 
