@@ -1,0 +1,48 @@
+version: '3.6'
+services:
+  db:
+    image: connorpoole/postgis:13
+    restart: always
+    environment:
+      POSTGRES_USER: local
+      POSTGRES_PASSWORD: bird
+      POSTGRES_DB: bird_test
+      POSTGRES_MULTIPLE_DATABASES: geofence, geofence_test
+    networks:
+      - api_net
+    command: postgres -N 500
+    ports:
+      - 1114:5432
+    volumes:
+      - type: tmpfs
+        target: /var/lib/postgresql/data
+
+  localstack:
+    image: localstack/localstack:0.11.4
+    environment:
+      SERVICES: 's3, sqs'
+      HOSTNAME: localstack
+    networks:
+      - api_net
+    ports:
+      - 4576:4576
+      - 4572:4572
+
+
+  redis-cluster:
+    image: docker.io/stobias123/redis-cluster:latest
+    networks:
+      - api_net
+    environment:
+      IS_CI: ${IS_CI}
+    ports:
+      - 30000:30000
+      - 30001:30001
+      - 30002:30002
+      - 30003:30003
+      - 30004:30004
+      - 30005:30005
+
+networks:
+  api_net:
+    name: ci_net
