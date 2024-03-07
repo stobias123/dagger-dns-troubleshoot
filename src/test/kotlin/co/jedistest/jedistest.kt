@@ -3,7 +3,7 @@ import redis.clients.jedis.DefaultJedisClientConfig
 import redis.clients.jedis.HostAndPort
 import redis.clients.jedis.JedisCluster
 
-class ActiveRideCacheTest {
+class JedisTest {
 
   companion object {
     private val redis by lazy {
@@ -28,6 +28,7 @@ class ActiveRideCacheTest {
   @Test
   fun `test running redis-cli command`() {
     val result = Runtime.getRuntime().exec("redis-cli -h redis-cluster -p 30000 ping").inputStream.bufferedReader().readText()
+    println(result)
     assert(result == "PONG")
   }
 }
