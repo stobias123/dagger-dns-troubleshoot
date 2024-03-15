@@ -19,6 +19,13 @@ tasks.test {
     useJUnitPlatform()
 }
 
+test {
+    testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
+}
+
 kotlin {
     jvmToolchain(8)
 }

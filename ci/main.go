@@ -40,5 +40,5 @@ func main() {
 		WithServiceBinding("redis-cluster", service).
 		//WithEntrypoint([]string{"/bin/bash"}).
 		WithExec([]string{"redis-cli", "-h", "redis-cluster", "-p", "30000", "ping"}).
-		WithExec([]string{"./gradlew", ":test", "--tests", "ActiveRideCacheTest"}).Sync(ctx)
+		WithExec([]string{"./gradlew", ":test"}).Sync(ctx)
 }
