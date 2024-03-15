@@ -35,10 +35,16 @@ func main() {
 		WithExposedPort(30005).
 		AsService()
 
-	ctr.WithMountedDirectory("/app", src).
+	output, err := ctr.WithMountedDirectory("/app", src).
 		WithWorkdir("/app").
 		WithServiceBinding("redis-cluster", service).
 		//WithEntrypoint([]string{"/bin/bash"}).
 		WithExec([]string{"redis-cli", "-h", "redis-cluster", "-p", "30000", "ping"}).
-		WithExec([]string{"./gradlew", ":test"}).Sync(ctx)
+		WithExec([]string{"./gradlew", ":test"}).File("/app/build/reports/tests/test/index.html").Contents(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := os.WriteFile("test-output.html", []byte(output), 0644); err != nil {
+		log.Fatalf("Failed to write output to file: %v", err)
+	}
 }

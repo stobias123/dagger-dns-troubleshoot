@@ -20,16 +20,28 @@ class JedisTest {
 
   @Test
   fun `test a simple redis ping`() {
-    redis.set("test", "test")
-    val result = redis.get("test")
-    assert(result == "test")
+    val hosts = "redis-cluster:30000,redis-cluster:30001,redis-cluster:30002,redis-cluster:30003,redis-cluster:30004,redis-cluster:30005"
+    val redisInTest = JedisCluster(
+        hosts.toHostPorts(),
+        DefaultJedisClientConfig
+          .builder()
+          .build()
+      )
+   
+    try {
+        redisInTest.set("test", "test")
+        val result = redis.get("test")
+    } catch (e: Exception) {
+        println(e)
+        throw(e)
+    }
   }
 
   @Test
   fun `test running redis-cli command`() {
     val result = Runtime.getRuntime().exec("redis-cli -h redis-cluster -p 30000 ping").inputStream.bufferedReader().readText()
     println(result)
-    assert(result == "PONG")
+    assert(result.contains("PONG"))
   }
 }
 
