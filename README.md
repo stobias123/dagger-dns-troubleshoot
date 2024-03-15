@@ -1,5 +1,22 @@
 # Dagger Jedis Failure Example Repo
 
+## The Issue
+
+Jedis seems to get an error.
+```
+        at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+        Suppressed: java.net.ConnectException: Connection refused (Connection refused)
+                at java.net.PlainSocketImpl.socketConnect(Native Method)
+                at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+                at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+                at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+                at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+                at java.net.Socket.connect(Socket.java:607)
+                at redis.clients.jedis.DefaultJedisSocketFactory.connectToFirstSuccessfulHost(DefaultJedisSocketFactory.java:75)
+```
+
+## Reproduction
+
 To reproduce
 
 ```shell
