@@ -25,9 +25,19 @@ func main() {
 	src := c.Host().Directory(".")
 	//src := pipeline.Host().Directory(".")
 	ctr := c.Container().From("amazoncorretto:8").WithExec([]string{"amazon-linux-extras", "install", "redis6"})
-	ctr = BindDockerCompose(c, ctr, "docker-compose.ci.yml")
+
+	service := c.Container().From("docker.io/stobias123/redis-cluster:latest").
+		WithExposedPort(30000).
+		WithExposedPort(30001).
+		WithExposedPort(30002).
+		WithExposedPort(30003).
+		WithExposedPort(30004).
+		WithExposedPort(30005).
+		AsService()
+
 	ctr.WithMountedDirectory("/app", src).
 		WithWorkdir("/app").
+		WithServiceBinding("redis-cluster", service).
 		//WithEntrypoint([]string{"/bin/bash"}).
 		WithExec([]string{"redis-cli", "-h", "redis-cluster", "-p", "30000", "ping"}).
 		WithExec([]string{"./gradlew", ":test", "--tests", "ActiveRideCacheTest"}).Sync(ctx)
