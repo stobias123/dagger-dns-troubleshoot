@@ -1,3 +1,6 @@
+import java.io.IOException
+import java.net.InetAddress
+import java.net.UnknownHostException
 import org.junit.jupiter.api.Test
 import redis.clients.jedis.DefaultJedisClientConfig
 import redis.clients.jedis.HostAndPort
@@ -15,6 +18,31 @@ class JedisTest {
           .builder()
           .build()
       )
+    }
+  }
+
+  @Test
+  fun `test redis-cluster IP resolution`() {
+    try {
+      val hostName = "redis-cluster"
+      val inetAddresses = InetAddress.getAllByName(hostName)
+      println("IP addresses for $hostName:")
+      inetAddresses.forEach { println(it.hostAddress) }
+
+      val ports = listOf(30000, 30001, 30002, 30003, 30004, 30005)
+      ports.forEach { port ->
+        try {
+          val result = Runtime.getRuntime().exec("redis-cli -h $hostName -p $port ping").inputStream.bufferedReader().readText()
+          println("Ping result for port $port: $result")
+          assert(result.contains("PONG"))
+        } catch (e: IOException) {
+          println("Failed to ping redis-cluster on port $port")
+          e.printStackTrace()
+        }
+      }
+    } catch (e: UnknownHostException) {
+      println("Failed to resolve host: redis-cluster")
+      e.printStackTrace()
     }
   }
 
